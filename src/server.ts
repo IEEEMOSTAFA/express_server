@@ -71,7 +71,7 @@ initDB();
 
 
 // Create Operation
-app.post("/users",async (req:Request,res:Response)=>{
+app.post("/users",logger,async (req:Request,res:Response)=>{
   console.log("Request Body is :",req.body);
 
   let {name, email} = req.body;
@@ -124,7 +124,7 @@ app.get("/users",logger, async (req :Request, res : Response) => {
 
 
 // single read operation:
-app.get("/users/:id", async (req :Request, res : Response) => {
+app.get("/users/:id",logger, async (req :Request, res : Response) => {
   
  try{
   let result = await pool.query(`SELECT * FROM users WHERE id = $1`,[
@@ -158,7 +158,7 @@ app.get("/users/:id", async (req :Request, res : Response) => {
 
 )
 // Update operation:
-app.put("/users/:id", async (req :Request, res : Response) => {
+app.put("/users/:id",logger, async (req :Request, res : Response) => {
 
   const {name,email} = req.body;
   
@@ -194,7 +194,7 @@ app.put("/users/:id", async (req :Request, res : Response) => {
 
 
 // DELETE operation:
-app.delete("/users/:id", async (req :Request, res : Response) => {
+app.delete("/users/:id",logger, async (req :Request, res : Response) => {
   
  try{
   let result = await pool.query(`DELETE FROM users WHERE id = $1`,[
@@ -239,7 +239,7 @@ app.delete("/users/:id", async (req :Request, res : Response) => {
 // todo CRUD OPERATION::
 
 // create:
-app.post("/todos", async(req:Request,res: Response) =>{
+app.post("/todos",logger, async(req:Request,res: Response) =>{
   const{user_id,tittle} = req.body;
 
   try{
@@ -258,6 +258,94 @@ app.post("/todos", async(req:Request,res: Response) =>{
 
   }
 })
+
+// Read:
+app.get("/todos",logger, async(req:Request,res: Response) => {
+  
+  // let {user_id,tittle} = req.body;
+
+  try{
+         let result = await pool.query(`SELECT* FROM todos`)
+         res.status(200).json({
+          success: true,
+          message: "User find successfully..",
+          data: result.rows
+         })
+  }
+  catch(err:any){
+    res.status(500).json({
+      success:false,
+      message:err.message,
+      details: err
+
+    })
+
+  }
+})
+
+// Update : 
+app.put("/todos/:id", logger, async(req: Request,res: Response) =>{
+  let{user_id,tittle} = req.body;
+  try{
+   let result = await pool.query(`SELECT users SET user_id = $1,tittle = $2 WHERE id = $3 RETURNING* `,[user_id,tittle,req.params.id]);
+
+   if(result.rows.length === 0){
+    res.status(404).json({
+      success:false,
+      message:"User not found...",
+    });
+
+  }
+   else{
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully....",
+      data: result.rows[0]
+    })
+  }
+
+
+  }
+ catch(err:any){
+    res.status(500).json({
+      success:false,
+      message:err.message,
+      details: err
+
+    })
+
+  }
+})
+
+// Delete::
+
+app.delete("/todos/:id", async (req: Request, res: Response) =>{
+  let {user_id,tittle} = req.body;
+
+  try{
+    let result = await pool.query(`DELETE FROM todos WHERE id=$1`)
+
+    if(result.rowCount === 0){
+      res.status(404).json({
+        success: false,
+        message: "User not found........"
+      })
+    }
+    else{{
+      res.status(200).json({
+        success: true,
+        message: "user delete successfully..",
+        data: result.rows
+      })
+    }}
+
+  }
+  catch{
+
+  }
+})
+
+
 
 
 
