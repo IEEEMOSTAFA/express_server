@@ -1,0 +1,15 @@
+import express,{NextFunction, Request,Response} from "express";
+// import { pool } from "../../config/db";
+import { pool } from "../../config/db";
+import { userControllers } from "./user.controller";
+
+let router = express.Router();
+
+router.post("/",userControllers.createUser);
+router.get("/",userControllers.getUser);
+router.get("/:id",userControllers.getSingleUser);
+router.put("/:id",userControllers.updateUser);
+router.delete("/:id",userControllers.deleteUser);
+
+
+export const useRoutes = router;
