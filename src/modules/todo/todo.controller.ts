@@ -83,7 +83,7 @@ const updateTodo = async(req: Request,res: Response) =>{
 
 
 const deleteTodo = async (req: Request, res: Response) =>{
-  let {user_id,tittle} = req.body;
+
 
   try{
     let result = await todoService.deleteTodo(req.params.id!);
