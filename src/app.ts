@@ -8,7 +8,7 @@ import { useRoutes } from "./modules/user/user.routes";
 import { todoRoutes } from "./modules/todo/todo.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 const app = express();
-const port = config.port;
+
 
 
 app.use(express.json());
@@ -43,6 +43,5 @@ app.use((req,res) =>{
   })
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+
+export default app;
