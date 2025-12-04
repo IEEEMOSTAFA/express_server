@@ -18,8 +18,10 @@ app.use(express.urlencoded({ extended: true }));
 
 
 initDB();
-
-
+// "/" -> localhost:5000/
+app.get("/", logger, (req: Request, res: Response) => {
+  res.send("Hello Next Level Developers!");
+});
 // users operation:
 app.use("/users",useRoutes);
 
